@@ -6,7 +6,6 @@ import { ChangeEvent, FormEvent, useEffect, useRef } from "react"
 import { toast } from "react-hot-toast"
 import { useLocation, useNavigate } from "react-router-dom"
 import { v4 as uuidv4 } from "uuid"
-import logo from "@/assets/logo.svg"
 
 const FormComponent = () => {
     const location = useLocation()
@@ -89,39 +88,162 @@ const FormComponent = () => {
     }, [currentUser, location.state?.redirect, navigate, setStatus, socket, status])
 
     return (
-        <div className="flex w-full max-w-[500px] flex-col items-center justify-center gap-4 p-4 sm:w-[500px] sm:p-8">
-            <img src={logo} alt="Logo" className="w-full"/>
-            <form onSubmit={joinRoom} className="flex w-full flex-col gap-4">
-                <input
-                    type="text"
-                    name="roomId"
-                    placeholder="Room Id"
-                    className="w-full rounded-md border border-gray-500 bg-darkHover px-3 py-3 focus:outline-none"
-                    onChange={handleInputChanges}
-                    value={currentUser.roomId}
-                />
-                <input
-                    type="text"
-                    name="username"
-                    placeholder="Username"
-                    className="w-full rounded-md border border-gray-500 bg-darkHover px-3 py-3 focus:outline-none"
-                    onChange={handleInputChanges}
-                    value={currentUser.username}
-                    ref={usernameRef}
-                />
+        <div style={{
+            width: '100%',
+            maxWidth: '400px',
+            margin: '0 auto',
+            padding: '0'
+        }}>
+            {/* Header */}
+            <div style={{
+                textAlign: 'center',
+                marginBottom: '3rem'
+            }}>
+                <h1 style={{
+                    fontSize: '4rem',
+                    fontWeight: 'bold',
+                    color: '#ffffff',
+                    marginBottom: '1rem',
+                    letterSpacing: '-0.025em',
+                    fontFamily: 'Space Grotesk, sans-serif'
+                }}>
+                    Code Sync
+                </h1>
+                <p style={{
+                    color: '#d1d5db',
+                    fontSize: '1.125rem',
+                    fontWeight: '500',
+                    fontFamily: 'Space Grotesk, sans-serif'
+                }}>
+                    Code, Chat, Collaborate. It's All in Sync.
+                </p>
+            </div>
+
+            {/* Form */}
+            <form onSubmit={joinRoom} style={{ marginBottom: '2rem' }}>
+                {/* Room ID Input */}
+                <div style={{ marginBottom: '1.5rem' }}>
+                    <input
+                        type="text"
+                        name="roomId"
+                        placeholder="ROOM Id"
+                        style={{
+                            width: '100%',
+                            padding: '1rem 1.25rem',
+                            backgroundColor: '#4a5568',
+                            color: '#ffffff',
+                            border: 'none',
+                            borderRadius: '0.5rem',
+                            fontSize: '1rem',
+                            fontWeight: '500',
+                            outline: 'none',
+                            fontFamily: 'Space Grotesk, sans-serif',
+                            boxSizing: 'border-box'
+                        }}
+                        onChange={handleInputChanges}
+                        value={currentUser.roomId}
+                    />
+                </div>
+
+                {/* Username Input */}
+                <div style={{ marginBottom: '2rem' }}>
+                    <input
+                        type="text"
+                        name="username"
+                        placeholder="USERNAME"
+                        style={{
+                            width: '100%',
+                            padding: '1rem 1.25rem',
+                            backgroundColor: '#4a5568',
+                            color: '#ffffff',
+                            border: 'none',
+                            borderRadius: '0.5rem',
+                            fontSize: '1rem',
+                            fontWeight: '500',
+                            outline: 'none',
+                            fontFamily: 'Space Grotesk, sans-serif',
+                            boxSizing: 'border-box'
+                        }}
+                        onChange={handleInputChanges}
+                        value={currentUser.username}
+                        ref={usernameRef}
+                    />
+                </div>
+
+                {/* Join Button */}
                 <button
                     type="submit"
-                    className="mt-2 w-full rounded-md bg-primary px-8 py-3 text-lg font-semibold text-black"
+                    disabled={status === USER_STATUS.ATTEMPTING_JOIN}
+                    style={{
+                        width: '100%',
+                        padding: '1rem 1.5rem',
+                        backgroundColor: status === USER_STATUS.ATTEMPTING_JOIN ? '#38a169' : '#48bb78',
+                        color: '#ffffff',
+                        border: 'none',
+                        borderRadius: '0.5rem',
+                        fontSize: '1.125rem',
+                        fontWeight: 'bold',
+                        cursor: status === USER_STATUS.ATTEMPTING_JOIN ? 'not-allowed' : 'pointer',
+                        opacity: status === USER_STATUS.ATTEMPTING_JOIN ? 0.5 : 1,
+                        fontFamily: 'Space Grotesk, sans-serif',
+                        transition: 'all 0.2s ease',
+                        boxSizing: 'border-box'
+                    }}
+                    onMouseOver={(e) => {
+                        if (!e.currentTarget.disabled) {
+                            e.currentTarget.style.backgroundColor = '#38a169'
+                        }
+                    }}
+                    onMouseOut={(e) => {
+                        if (!e.currentTarget.disabled) {
+                            e.currentTarget.style.backgroundColor = '#48bb78'
+                        }
+                    }}
                 >
-                    Join
+                    {status === USER_STATUS.ATTEMPTING_JOIN ? (
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+                            <div style={{
+                                width: '1.25rem',
+                                height: '1.25rem',
+                                border: '2px solid #ffffff',
+                                borderTop: '2px solid transparent',
+                                borderRadius: '50%',
+                                animation: 'spin 1s linear infinite'
+                            }}></div>
+                            <span>Joining...</span>
+                        </div>
+                    ) : (
+                        "Join"
+                    )}
                 </button>
             </form>
-            <button
-                className="cursor-pointer select-none underline"
-                onClick={createNewRoomId}
-            >
-                Generate Unique Room Id
-            </button>
+
+            {/* Generate Room ID Link */}
+            <div style={{ textAlign: 'center' }}>
+                <button
+                    type="button"
+                    style={{
+                        color: '#d1d5db',
+                        background: 'none',
+                        border: 'none',
+                        textDecoration: 'underline',
+                        fontSize: '1rem',
+                        fontWeight: '500',
+                        cursor: 'pointer',
+                        fontFamily: 'Space Grotesk, sans-serif',
+                        transition: 'color 0.2s ease'
+                    }}
+                    onMouseOver={(e) => {
+                        e.currentTarget.style.color = '#ffffff'
+                    }}
+                    onMouseOut={(e) => {
+                        e.currentTarget.style.color = '#d1d5db'
+                    }}
+                    onClick={createNewRoomId}
+                >
+                    Generate Unique Room ID
+                </button>
+            </div>
         </div>
     )
 }

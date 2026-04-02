@@ -283,6 +283,63 @@ io.on("connection", (socket) => {
 			snapshot,
 		})
 	})
+
+	// Test video call socket connection
+	socket.on('test-video-call', ({ message }) => {
+		console.log('📞 Video call socket test received:', message, 'from:', socket.id)
+	})
+
+	// Video Call Events
+	socket.on('call-user', ({ targetSocketId, targetUsername, callerUsername, offer }) => {
+		console.log('📞 Call initiated from:', callerUsername, 'to:', targetUsername)
+		// Forward the call to the target user
+		socket.to(targetSocketId).emit('incoming-call', {
+			callerUsername,
+			callerSocketId: socket.id,
+			offer
+		})
+	})
+
+	socket.on('accept-call', ({ callerSocketId, answer }) => {
+		// Forward the acceptance to the caller
+		socket.to(callerSocketId).emit('call-accepted', {
+			answer
+		})
+	})
+
+	socket.on('ice-candidate', ({ candidate, targetSocketId }) => {
+		// Forward ICE candidate to the target peer
+		socket.to(targetSocketId).emit('ice-candidate', {
+			candidate
+		})
+	})
+
+	socket.on('reject-call', ({ callerSocketId }) => {
+		// Forward the rejection to the caller
+		socket.to(callerSocketId).emit('call-rejected')
+	})
+
+	socket.on('end-call', () => {
+		// Broadcast call end to all users in the room
+		const roomId = getRoomId(socket.id)
+		if (!roomId) return
+		socket.broadcast.to(roomId).emit('call-ended')
+	})
+
+	// Handle disconnect
+	socket.on('disconnect', () => {
+		// Remove user from the map
+		userSocketMap = userSocketMap.filter((user) => user.socketId !== socket.id)
+		
+		// Notify other users in the room about the disconnection
+		const roomId = getRoomId(socket.id)
+		if (roomId) {
+			socket.broadcast.to(roomId).emit('call-ended')
+			socket.broadcast.to(roomId).emit(SocketEvent.USER_DISCONNECTED, {
+				socketId: socket.id
+			})
+		}
+	})
 })
 
 const PORT = process.env.PORT || 3000

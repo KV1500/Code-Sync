@@ -7,9 +7,14 @@ import UsersView from "@/components/sidebar/sidebar-views/UsersView"
 import useWindowDimensions from "@/hooks/useWindowDimensions"
 import { VIEWS, ViewContext as ViewContextType } from "@/types/view"
 import { ReactNode, createContext, useContext, useState } from "react"
-import { IoSettingsOutline } from "react-icons/io5"
-import { LuFiles, LuSparkles } from "react-icons/lu"
-import { PiChats, PiPlay, PiUsers } from "react-icons/pi"
+import { 
+    Files, 
+    MessageSquare, 
+    Sparkles, 
+    Play, 
+    Users, 
+    Settings
+} from "lucide-react"
 
 const ViewContext = createContext<ViewContextType | null>(null)
 
@@ -34,12 +39,12 @@ function ViewContextProvider({ children }: { children: ReactNode }) {
         [VIEWS.RUN]: <RunView />,
     })
     const [viewIcons] = useState({
-        [VIEWS.FILES]: <LuFiles size={28} />,
-        [VIEWS.CLIENTS]: <PiUsers size={30} />,
-        [VIEWS.SETTINGS]: <IoSettingsOutline size={28} />,
-        [VIEWS.CHATS]: <PiChats size={30} />,
-        [VIEWS.COPILOT]: <LuSparkles size={28} />,
-        [VIEWS.RUN]: <PiPlay size={28} />,
+        [VIEWS.FILES]: <Files size={20} strokeWidth={1.5} />,
+        [VIEWS.CLIENTS]: <Users size={20} strokeWidth={1.5} />,
+        [VIEWS.SETTINGS]: <Settings size={20} strokeWidth={1.5} />,
+        [VIEWS.CHATS]: <MessageSquare size={20} strokeWidth={1.5} />,
+        [VIEWS.COPILOT]: <Sparkles size={20} strokeWidth={1.5} />,
+        [VIEWS.RUN]: <Play size={20} strokeWidth={1.5} />,
     })
 
     return (

@@ -2,7 +2,7 @@ import { useFileSystem } from "@/context/FileContext"
 import { getIconClassName } from "@/utils/getIconClassName"
 import { Icon } from "@iconify/react"
 import { IoClose } from "react-icons/io5"
-import cn from "classnames"
+
 import { useEffect, useRef } from "react"
 import customMapping from "@/utils/customMapping"
 import { useSettings } from "@/context/SettingContext"
@@ -68,36 +68,30 @@ function FileTab() {
     }, [activeFile?.name, setLanguage])
 
     return (
-        <div
-            className="flex h-[50px] w-full select-none gap-2 overflow-x-auto p-2 pb-0"
-            ref={fileTabRef}
-        >
+        <div className="vscode-tabs" ref={fileTabRef}>
             {openFiles.map((file) => (
-                <span
+                <div
                     key={file.id}
-                    className={cn(
-                        "flex w-fit cursor-pointer items-center rounded-t-md px-2 py-1 text-white",
-                        { "bg-darkHover": file.id === activeFile?.id },
-                    )}
+                    className={`vscode-tab ${file.id === activeFile?.id ? 'active' : ''}`}
                     onClick={() => changeActiveFile(file.id)}
                 >
                     <Icon
                         icon={getIconClassName(file.name)}
-                        fontSize={22}
-                        className="mr-2 min-w-fit"
+                        className="vscode-tab-icon"
                     />
-                    <p
-                        className="flex-grow cursor-pointer overflow-hidden truncate"
-                        title={file.name}
-                    >
+                    <span className="vscode-tab-name" title={file.name}>
                         {file.name}
-                    </p>
-                    <IoClose
-                        className="ml-3 inline rounded-md hover:bg-darkHover"
-                        size={20}
-                        onClick={() => closeFile(file.id)}
-                    />
-                </span>
+                    </span>
+                    <div
+                        className="vscode-tab-close"
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            closeFile(file.id)
+                        }}
+                    >
+                        <IoClose size={12} />
+                    </div>
+                </div>
             ))}
         </div>
     )

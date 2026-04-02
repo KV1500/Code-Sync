@@ -1,41 +1,88 @@
 import { useAppContext } from "@/context/AppContext"
 import { RemoteUser, USER_CONNECTION_STATUS } from "@/types/user"
-import Avatar from "react-avatar"
+import { useSimpleVideoCall } from "@/context/SimpleVideoCallContext"
+import { Video } from "lucide-react"
+import ModernAvatar from "./ModernAvatar"
+
+// Function to get consistent avatar style for each user
+const getAvatarStyle = (username: string): 'adventurer' | 'avataaars' | 'openPeeps' => {
+    const styles: ('adventurer' | 'avataaars' | 'openPeeps')[] = ['adventurer', 'avataaars', 'openPeeps']
+    
+    // Generate hash from username for consistent style selection
+    let hash = 0
+    for (let i = 0; i < username.length; i++) {
+        const char = username.charCodeAt(i)
+        hash = ((hash << 5) - hash) + char
+        hash = hash & hash
+    }
+    
+    const styleIndex = Math.abs(hash) % styles.length
+    return styles[styleIndex]
+}
 
 function Users() {
     const { users } = useAppContext()
 
     return (
-        <div className="flex min-h-[200px] flex-grow justify-center overflow-y-auto py-2">
-            <div className="flex h-full w-full flex-wrap items-start gap-x-2 gap-y-6">
-                {users.map((user) => {
-                    return <User key={user.socketId} user={user} />
-                })}
-            </div>
+        <div className="vscode-users-list">
+            {users.map((user) => {
+                return <User key={user.socketId} user={user} />
+            })}
         </div>
     )
 }
 
 const User = ({ user }: { user: RemoteUser }) => {
-    const { username, status } = user
-    const title = `${username} - ${status === USER_CONNECTION_STATUS.ONLINE ? "online" : "offline"}`
+    const { username, status, socketId } = user
+    const { currentUser } = useAppContext()
+    const { startCall, isInCall } = useSimpleVideoCall()
+    
+    const handleVideoCall = (e: React.MouseEvent) => {
+        e.stopPropagation()
+        if (status === USER_CONNECTION_STATUS.ONLINE && !isInCall) {
+            console.log('Starting video call to:', username)
+            startCall(socketId, username)
+        }
+    }
+    
+    const isCurrentUser = username === currentUser.username
+    const canCall = status === USER_CONNECTION_STATUS.ONLINE && !isCurrentUser && !isInCall
 
     return (
-        <div
-            className="relative flex w-[100px] flex-col items-center gap-2"
-            title={title}
-        >
-            <Avatar name={username} size="50" round={"12px"} title={title} />
-            <p className="line-clamp-2 max-w-full text-ellipsis break-words">
-                {username}
-            </p>
-            <div
-                className={`absolute right-5 top-0 h-3 w-3 rounded-full ${
-                    status === USER_CONNECTION_STATUS.ONLINE
-                        ? "bg-green-500"
-                        : "bg-danger"
-                }`}
-            ></div>
+        <div className="vscode-user-card">
+            <div className="vscode-user-avatar-container">
+                <ModernAvatar 
+                    name={username} 
+                    size={44} 
+                    style={getAvatarStyle(username)}
+                />
+                <div
+                    className={`vscode-user-status ${
+                        status === USER_CONNECTION_STATUS.ONLINE ? "online" : "offline"
+                    }`}
+                />
+                
+                {/* Call Button - Top Right Corner - Always Visible */}
+                {!isCurrentUser && (
+                    <button
+                        onClick={handleVideoCall}
+                        className={`vscode-call-button-corner ${
+                            status === USER_CONNECTION_STATUS.ONLINE ? 'online' : 'offline'
+                        } ${isInCall ? 'disabled' : ''}`}
+                        title={
+                            status === USER_CONNECTION_STATUS.ONLINE && !isInCall
+                                ? `Start video call with ${username}`
+                                : status === USER_CONNECTION_STATUS.OFFLINE
+                                ? `${username} is offline`
+                                : `Already in a call`
+                        }
+                        disabled={!canCall}
+                    >
+                        <Video size={14} />
+                    </button>
+                )}
+            </div>
+            <span className="vscode-user-name">{username}</span>
         </div>
     )
 }

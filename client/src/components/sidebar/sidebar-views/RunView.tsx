@@ -2,8 +2,7 @@ import { useRunCode } from "@/context/RunCodeContext"
 import useResponsive from "@/hooks/useResponsive"
 import { ChangeEvent } from "react"
 import toast from "react-hot-toast"
-import { LuCopy } from "react-icons/lu"
-import { PiCaretDownBold } from "react-icons/pi"
+import { Copy, ChevronDown, Play, Terminal, Loader2 } from "lucide-react"
 
 function RunView() {
     const { viewHeight } = useResponsive()
@@ -28,15 +27,24 @@ function RunView() {
     }
 
     return (
-        <div
-            className="flex flex-col items-center gap-2 p-4"
-            style={{ height: viewHeight }}
-        >
-            <h1 className="view-title">Run Code</h1>
-            <div className="flex h-[90%] w-full flex-col items-end gap-2 md:h-[92%]">
-                <div className="relative w-full">
+        <div className="vscode-run-debug" style={{ height: viewHeight }}>
+            {/* Header */}
+            <div className="vscode-run-header">
+                <div className="vscode-run-icon-badge">
+                    <Terminal className="vscode-run-icon" />
+                </div>
+                <div className="vscode-run-title">
+                    <h1>Run & Debug</h1>
+                    <p>Execute code in multiple languages</p>
+                </div>
+            </div>
+            
+            {/* Content */}
+            <div className="vscode-run-content">
+                {/* Language Selector */}
+                <div className="vscode-language-selector">
                     <select
-                        className="w-full rounded-md border-none bg-darkHover px-4 py-2 text-white outline-none"
+                        className="vscode-language-select"
                         value={JSON.stringify(selectedLanguage)}
                         onChange={handleLanguageChange}
                     >
@@ -56,36 +64,52 @@ function RunView() {
                                 )
                             })}
                     </select>
-                    <PiCaretDownBold
-                        size={16}
-                        className="absolute bottom-3 right-4 z-10 text-white"
-                    />
+                    <ChevronDown className="vscode-language-chevron" />
                 </div>
+                
+                {/* Code Input */}
                 <textarea
-                    className="min-h-[120px] w-full resize-none rounded-md border-none bg-darkHover p-2 text-white outline-none"
-                    placeholder="Write you input here..."
+                    className="vscode-code-input"
+                    placeholder="Write your input here..."
                     onChange={(e) => setInput(e.target.value)}
                 />
+                
+                {/* Run Button */}
                 <button
-                    className="flex w-full justify-center rounded-md bg-primary p-2 font-bold text-black outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                    className="vscode-run-btn"
                     onClick={runCode}
                     disabled={isRunning}
                 >
-                    Run
+                    {isRunning ? (
+                        <>
+                            <Loader2 className="spin" style={{ width: '16px', height: '16px' }} />
+                            Running...
+                        </>
+                    ) : (
+                        <>
+                            <Play style={{ width: '16px', height: '16px' }} />
+                            Run Code
+                        </>
+                    )}
                 </button>
-                <label className="flex w-full justify-between">
-                    Output :
-                    <button onClick={copyOutput} title="Copy Output">
-                        <LuCopy
-                            size={18}
-                            className="cursor-pointer text-white"
-                        />
-                    </button>
-                </label>
-                <div className="w-full flex-grow resize-none overflow-y-auto rounded-md border-none bg-darkHover p-2 text-white outline-none">
-                    <code>
-                        <pre className="text-wrap">{output}</pre>
-                    </code>
+                
+                {/* Output Section */}
+                <div className="vscode-output-section">
+                    <div className="vscode-output-header">
+                        <label className="vscode-output-label">Output</label>
+                        <button 
+                            onClick={copyOutput} 
+                            title="Copy Output"
+                            className="vscode-output-copy-btn"
+                        >
+                            <Copy style={{ width: '16px', height: '16px' }} />
+                        </button>
+                    </div>
+                    
+                    {/* Output Display */}
+                    <div className="vscode-output-display">
+                        {output || "No output yet..."}
+                    </div>
                 </div>
             </div>
         </div>

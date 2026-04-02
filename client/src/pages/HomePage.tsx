@@ -1,23 +1,59 @@
 import illustration from "@/assets/illustration.svg"
 import FormComponent from "@/components/forms/FormComponent"
-// import Footer from "@/components/common/Footer";
 
 function HomePage() {
     return (
-        <div className="flex min-h-screen flex-col items-center justify-center gap-16">
-            <div className="my-12 flex h-full min-w-full flex-col items-center justify-evenly sm:flex-row sm:pt-0">
-                <div className="flex w-full animate-up-down justify-center sm:w-1/2 sm:pl-4">
-                    <img
-                        src={illustration}
-                        alt="Code Sync Illustration"
-                        className="mx-auto w-[250px] sm:w-[400px]"
-                    />
+        <div 
+            style={{ 
+                minHeight: '100vh',
+                width: '100vw',
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                backgroundColor: '#3a4553',
+                backgroundImage: 'linear-gradient(135deg, #3a4553 0%, #2d3748 100%)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '2rem',
+                zIndex: 1000
+            }}
+        >
+            {/* Main Container */}
+            <div style={{ 
+                width: '100%',
+                maxWidth: '1200px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '4rem'
+            }}>
+                {/* Left Side - Illustration */}
+                <div style={{ 
+                    flex: 1,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                }}>
+                    <div style={{ width: '100%', maxWidth: '400px' }}>
+                        <img
+                            src={illustration}
+                            alt="Code Sync Illustration"
+                            style={{ width: '100%', height: 'auto' }}
+                        />
+                    </div>
                 </div>
-                <div className="flex w-full items-center justify-center sm:w-1/2">
+                
+                {/* Right Side - Login Form */}
+                <div style={{ 
+                    flex: 1,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                }}>
                     <FormComponent />
                 </div>
             </div>
-            {/* <Footer /> */}
         </div>
     )
 }

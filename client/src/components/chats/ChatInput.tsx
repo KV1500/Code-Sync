@@ -4,8 +4,8 @@ import { useSocket } from "@/context/SocketContext"
 import { ChatMessage } from "@/types/chat"
 import { SocketEvent } from "@/types/socket"
 import { formatDate } from "@/utils/formateDate"
+import { Send } from "lucide-react"
 import { FormEvent, useRef } from "react"
-import { LuSendHorizonal } from "react-icons/lu"
 import { v4 as uuidV4 } from "uuid"
 
 function ChatInput() {
@@ -36,19 +36,19 @@ function ChatInput() {
     return (
         <form
             onSubmit={handleSendMessage}
-            className="flex justify-between rounded-md border border-primary"
+            className="vscode-chat-input-form"
         >
             <input
                 type="text"
-                className="w-full flex-grow rounded-md border-none bg-dark p-2 outline-none"
+                className="vscode-chat-input"
                 placeholder="Enter a message..."
                 ref={inputRef}
             />
             <button
-                className="flex items-center justify-center rounded-r-md  bg-primary p-2 text-black"
+                className="vscode-chat-send-button"
                 type="submit"
             >
-                <LuSendHorizonal size={24} />
+                <Send className="vscode-chat-send-icon" />
             </button>
         </form>
     )

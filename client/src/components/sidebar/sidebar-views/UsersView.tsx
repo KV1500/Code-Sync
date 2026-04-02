@@ -4,10 +4,9 @@ import { useSocket } from "@/context/SocketContext"
 import useResponsive from "@/hooks/useResponsive"
 import { USER_STATUS } from "@/types/user"
 import toast from "react-hot-toast"
-import { GoSignOut } from "react-icons/go"
-import { IoShareOutline } from "react-icons/io5"
-import { LuCopy } from "react-icons/lu"
+import { Share2, Copy, LogOut, Users as UsersIcon, Link } from "lucide-react"
 import { useNavigate } from "react-router-dom"
+import SidebarVideoCall from '../../video/SidebarVideoCall'
 
 function UsersView() {
     const navigate = useNavigate()
@@ -45,37 +44,61 @@ function UsersView() {
     }
 
     return (
-        <div className="flex flex-col p-4" style={{ height: viewHeight }}>
-            <h1 className="view-title">Users</h1>
-            {/* List of connected users */}
-            <Users />
-            <div className="flex flex-col items-center gap-4 pt-4">
-                <div className="flex w-full gap-4">
+        <div className="vscode-live-share" style={{ height: viewHeight }}>
+            {/* Header */}
+            <div className="vscode-live-header">
+                <div className="vscode-live-icon-badge">
+                    <UsersIcon className="vscode-live-icon" />
+                </div>
+                <div className="vscode-live-title">
+                    <h1>Live Share</h1>
+                    <p>Collaborate with your team</p>
+                </div>
+                <Link className="vscode-live-indicator" />
+            </div>
+            
+            {/* Content */}
+            <div className="vscode-live-content">
+                {/* Sidebar Video Call Component */}
+                <SidebarVideoCall />
+                
+                {/* List of connected users */}
+                <div className="vscode-users-list">
+                    <Users />
+                </div>
+                
+                {/* Action Buttons */}
+                <div className="vscode-live-actions">
                     {/* Share URL button */}
                     <button
-                        className="flex flex-grow items-center justify-center rounded-md bg-white p-3 text-black"
+                        className="vscode-live-action-btn primary"
                         onClick={shareURL}
                         title="Share Link"
                     >
-                        <IoShareOutline size={26} />
+                        <Share2 style={{ width: '16px', height: '16px' }} />
+                        <span>Share</span>
                     </button>
+                    
                     {/* Copy URL button */}
                     <button
-                        className="flex flex-grow items-center justify-center rounded-md bg-white p-3 text-black"
+                        className="vscode-live-action-btn secondary"
                         onClick={copyURL}
                         title="Copy Link"
                     >
-                        <LuCopy size={22} />
-                    </button>
-                    {/* Leave room button */}
-                    <button
-                        className="flex flex-grow items-center justify-center rounded-md bg-primary p-3 text-black"
-                        onClick={leaveRoom}
-                        title="Leave room"
-                    >
-                        <GoSignOut size={22} />
+                        <Copy style={{ width: '16px', height: '16px' }} />
+                        <span>Copy</span>
                     </button>
                 </div>
+                
+                {/* Leave room button */}
+                <button
+                    className="vscode-live-leave-btn"
+                    onClick={leaveRoom}
+                    title="Leave room"
+                >
+                    <LogOut style={{ width: '16px', height: '16px' }} />
+                    <span>Leave Room</span>
+                </button>
             </div>
         </div>
     )

@@ -1,11 +1,9 @@
-import  { useState } from "react"
+import { useState } from "react"
 import FileStructureView from "@/components/files/FileStructureView"
 import { useFileSystem } from "@/context/FileContext"
 import useResponsive from "@/hooks/useResponsive"
 import { FileSystemItem } from "@/types/file"
-import cn from "classnames"
-import { BiArchiveIn } from "react-icons/bi"
-import { TbFileUpload } from "react-icons/tb"
+import { FolderOpen, Download, Loader2, Files } from "lucide-react"
 import { v4 as uuidV4 } from "uuid"
 import { toast } from "react-hot-toast"
 
@@ -174,32 +172,47 @@ function FilesView() {
     }
 
     return (
-        <div
-            className="flex select-none flex-col gap-1 px-4 py-2"
-            style={{ height: viewHeight, maxHeight: viewHeight }}
-        >
-            <FileStructureView />
-            <div
-                className={cn(`flex min-h-fit flex-col justify-end pt-2`, {
-                    hidden: minHeightReached,
-                })}
-            >
-                <hr />
-                <button
-                    className="mt-2 flex w-full justify-start rounded-md p-2 transition-all hover:bg-darkHover"
-                    onClick={handleOpenDirectory}
-                    disabled={isLoading}
-                >
-                    <TbFileUpload className="mr-2" size={24} />
-                    {isLoading ? "Loading..." : "Open File/Folder"}
-                </button>
-                <button
-                    className="flex w-full justify-start rounded-md p-2 transition-all hover:bg-darkHover"
-                    onClick={downloadFilesAndFolders}
-                >
-                    <BiArchiveIn className="mr-2" size={22} /> Download Code
-                </button>
+        <div className="vscode-file-explorer" style={{ height: viewHeight }}>
+            {/* Header */}
+            <div className="vscode-explorer-header">
+                <div className="vscode-explorer-icon-badge">
+                    <Files className="vscode-explorer-icon" />
+                </div>
+                <div className="vscode-explorer-title">
+                    <h1>Explorer</h1>
+                    <p>Browse and manage files</p>
+                </div>
             </div>
+
+            {/* File Structure */}
+            <div className="vscode-file-tree">
+                <FileStructureView />
+            </div>
+
+            {/* Footer Actions */}
+            {!minHeightReached && (
+                <div className="vscode-explorer-footer">
+                    <button
+                        className={`vscode-footer-button primary ${isLoading ? 'disabled' : ''}`}
+                        onClick={handleOpenDirectory}
+                        disabled={isLoading}
+                    >
+                        {isLoading ? (
+                            <Loader2 className="vscode-footer-icon spin" />
+                        ) : (
+                            <FolderOpen className="vscode-footer-icon" />
+                        )}
+                        <span>{isLoading ? "Loading..." : "Open File/Folder"}</span>
+                    </button>
+                    <button
+                        className="vscode-footer-button success"
+                        onClick={downloadFilesAndFolders}
+                    >
+                        <Download className="vscode-footer-icon" />
+                        <span>Download Code</span>
+                    </button>
+                </div>
+            )}
         </div>
     )
 }

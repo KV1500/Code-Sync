@@ -1,33 +1,26 @@
 import { useFileSystem } from "@/context/FileContext"
-import useResponsive from "@/hooks/useResponsive"
-import cn from "classnames"
 import Editor from "./Editor"
 import FileTab from "./FileTab"
 
 function EditorComponent() {
     const { openFiles } = useFileSystem()
-    const { minHeightReached } = useResponsive()
 
     if (openFiles.length <= 0) {
         return (
-            <div className="flex h-full w-full items-center justify-center">
-                <h1 className="text-xl text-white">
-                    No file is currently open.
-                </h1>
+            <div className="vscode-editor-empty">
+                <h2>No file is currently open</h2>
+                <p>Open a file from the explorer to start editing</p>
             </div>
         )
     }
 
     return (
-        <main
-            className={cn("flex w-full flex-col overflow-x-auto md:h-screen", {
-                "h-[calc(100vh-50px)]": !minHeightReached,
-                "h-full": minHeightReached,
-            })}
-        >
+        <div className="flex flex-col h-full">
             <FileTab />
-            <Editor />
-        </main>
+            <div className="flex-1 overflow-hidden">
+                <Editor />
+            </div>
+        </div>
     )
 }
 

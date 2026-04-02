@@ -30,7 +30,9 @@ const ViewButton = ({ viewName, icon }: ViewButtonProps) => {
             <button
                 onClick={() => handleViewClick(viewName)}
                 onMouseEnter={() => setShowTooltip(true)} // Show tooltip again on hover
-                className={`${buttonStyles.base} ${buttonStyles.hover}`}
+                className={`${buttonStyles.base} ${buttonStyles.hover} ${
+                    activeView === viewName && isSidebarOpen ? buttonStyles.active : ''
+                }`}
                 {...(showTooltip && {
                     "data-tooltip-id": `tooltip-${viewName}`,
                     "data-tooltip-content": viewName,
@@ -39,7 +41,7 @@ const ViewButton = ({ viewName, icon }: ViewButtonProps) => {
                 <div className="flex items-center justify-center">{icon}</div>
                 {/* Show dot for new message in chat View Button */}
                 {viewName === VIEWS.CHATS && isNewMessage && (
-                    <div className="absolute right-0 top-0 h-3 w-3 rounded-full bg-primary"></div>
+                    <div className="absolute right-0 top-0 h-2 w-2 rounded-full bg-danger"></div>
                 )}
             </button>
             {/* render the tooltip */}
