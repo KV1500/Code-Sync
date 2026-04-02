@@ -130,6 +130,12 @@ function TerminalPanel({ onClose, onResize }: TerminalPanelProps) {
 
     return (
         <>
+            {/* Resize handle */}
+            <div
+                className="vscode-terminal-resize-handle"
+                onMouseDown={handleMouseDown}
+                style={{ height: '4px', cursor: 'ns-resize', width: '100%' }}
+            />
             <div className="vscode-terminal-header">
                 <div className="vscode-terminal-title">
                     <IoTerminal size={16} />
